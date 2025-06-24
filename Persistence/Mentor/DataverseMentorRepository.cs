@@ -52,26 +52,22 @@ public class DataverseMentorRepository : IMentorRepository
         throw new NotImplementedException();
     }
 
-    public Task AddAsync(Mentor mentor)
+    public async Task AddAsync(Mentor mentor,CancellationToken cancellationToken = default)
     {
         // TODO: Implement add logic to Dataverse
-        throw new NotImplementedException();
+        await Task.Run(() => throw new NotImplementedException());
     }
 
-    public Task UpdateAsync(Mentor mentor)
+    public Task UpdateAsync(Mentor mentor,CancellationToken cancellationToken = default)
     {
         // TODO: Implement update logic to Dataverse
         throw new NotImplementedException();
     }
 
-    public Task DeleteAsync(Guid id)
+    public Task DeleteAsync(Guid id,CancellationToken cancellationToken = default)
     {
         // TODO: Implement delete logic from Dataverse
         throw new NotImplementedException();
     }
 
-    public Task<Mentor> GetByIdAsync(string id)
-    {
-        throw new NotImplementedException();
-    }
 }

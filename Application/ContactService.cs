@@ -13,7 +13,7 @@ public class MentorService
         _repository = repository;
     }
 
-    public async Task<Mentor> GetByIdAsync(Guid id)
+    public async Task<Mentor> GetByIdAsync(string id)
     {
         var mentor = await _repository.GetByIdAsync(id);
         if (mentor == null)

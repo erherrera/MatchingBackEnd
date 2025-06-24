@@ -59,7 +59,7 @@ public interface IMentorRepository
 {
     Task<Mentor> GetByIdAsync(string id,CancellationToken cancellationToken = default);
     Task<IEnumerable<Mentor>> GetAllAsync(CancellationToken cancellationToken = default);
-    Task AddAsync(Mentor mentor);
-    Task UpdateAsync(Mentor mentor);
-    Task DeleteAsync(Guid id);
+    Task AddAsync(Mentor mentor,CancellationToken cancellationToken = default);
+    Task UpdateAsync(Mentor mentor,CancellationToken cancellationToken = default);
+    Task DeleteAsync(Guid id,CancellationToken cancellationToken = default);
 }
