@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>API</name>
+    </assembly>
+    <members>
+        <member name="T:API.Controllers.MentorController">
+            <summary>
+            Manages Mentor operations.
+            </summary>
+        </member>
+        <member name="M:API.Controllers.MentorController.#ctor(MediatR.IMediator)">
+            <summary>
+            Manages Mentor operations.
+            </summary>
+        </member>
+        <member name="M:API.Controllers.MentorController.GetMentorsList">
+            <summary>
+            Retrieves a list of mentors.
+            This endpoint returns a list of all mentors available in the system.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:API.Controllers.MentorController.GetMentorDetail(System.String)">
+            <summary>
+            Retrieves details of a specific mentor by ID.
+            This endpoint returns detailed information about a mentor specified by their ID.
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

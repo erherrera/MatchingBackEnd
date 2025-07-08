@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.PowerPlatform.Dataverse.Client;
 
-namespace Persistence.DbContext;
+namespace Persistence;
 
 public class DataverseContext : IDataverseContext
 {

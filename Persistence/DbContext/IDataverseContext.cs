@@ -1,6 +1,6 @@
 using System;
 
-namespace Persistence.DbContext;
+namespace Persistence;
 
 public class IDataverseContext
 {
