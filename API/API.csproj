@@ -9,14 +9,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\MentorsController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".dockerignore" />
+    <None Remove="Dockerfile" />
+    <None Remove="Dockerfile.original" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CrmSdk.CoreAssemblies" Version="9.0.2.59" />
-    <PackageReference Include="Microsoft.CrmSdk.Workflow" Version="9.0.2.59" />
-    <PackageReference Include="Microsoft.CrmSdk.XrmTooling.CoreAssembly" Version="9.1.1.65" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
   </ItemGroup>
-
+	<PropertyGroup>
+	  <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	  <UserSecretsId>7c1e15a0-da53-447c-b8e5-77aa80dbfd4c</UserSecretsId>
+	</PropertyGroup>
+	<ItemGroup>
+	  <None Remove="..\.dockerignore" />
+	</ItemGroup>
 </Project>

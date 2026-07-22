@@ -1,0 +1,131 @@
+trigger:
+  branches:
+    include:
+      - main
+      - develop
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  azureContainerRegistry: 'turegistro.azurecr.io'
+  imageName: 'cfe-proxy-api'
+  dockerfilePath: 'API/Dockerfile'
+  buildConfiguration: 'Release'
+  dotnetVersion: '9.0.x'
+
+stages:
+- stage: Build
+  displayName: 'Build and Test'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build .NET Application'
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Install .NET SDK'
+      inputs:
+        version: $(dotnetVersion)
+        includePreviewVersions: false
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore NuGet packages'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Build solution'
+      inputs:
+        command: 'build'
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration) --no-restore'
+
+    - task: DotNetCoreCLI@2
+      displayName: 'Run unit tests'
+      inputs:
+        command: 'test'
+        projects: '**/*Tests.csproj'
+        arguments: '--configuration $(buildConfiguration) --no-build'
+      continueOnError: true
+
+- stage: Docker
+  displayName: 'Build and Push Docker Image'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - job: DockerBuildPush
+    displayName: 'Docker Build and Push'
+    steps:
+    - task: Docker@2
+      displayName: 'Login to Azure Container Registry'
+      inputs:
+        command: 'login'
+        containerRegistry: 'ACR-ServiceConnection'  # Nombre de tu Service Connection
+
+    - task: Docker@2
+      displayName: 'Build Docker Image'
+      inputs:
+        command: 'build'
+        repository: $(imageName)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: 'ACR-ServiceConnection'
+        tags: |
+          $(Build.BuildId)
+          latest
+        arguments: '--build-arg BUILD_CONFIGURATION=$(buildConfiguration)'
+
+    - task: Docker@2
+      displayName: 'Push Docker Image to ACR'
+      inputs:
+        command: 'push'
+        repository: $(imageName)
+        containerRegistry: 'ACR-ServiceConnection'
+        tags: |
+          $(Build.BuildId)
+          latest
+
+    - task: AzureCLI@2
+      displayName: 'Scan image for vulnerabilities'
+      inputs:
+        azureSubscription: 'Azure-ServiceConnection'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az acr task run \
+            --registry $(azureContainerRegistry) \
+            --name scanImage \
+            --image $(imageName):$(Build.BuildId)
+      continueOnError: true
+
+- stage: Deploy
+  displayName: 'Deploy to Azure'
+  dependsOn: Docker
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - deployment: DeployToProduction
+    displayName: 'Deploy to Azure Container Instances'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureCLI@2
+            displayName: 'Deploy to Azure Container Instances'
+            inputs:
+              azureSubscription: 'Azure-ServiceConnection'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az container create \
+                  --resource-group CFE-RG \
+                  --name cfe-proxy-api \
+                  --image $(azureContainerRegistry)/$(imageName):$(Build.BuildId) \
+                  --cpu 1 --memory 1.5 \
+                  --registry-login-server $(azureContainerRegistry) \
+                  --registry-username $(ACR_USERNAME) \
+                  --registry-password $(ACR_PASSWORD) \
+                  --dns-name-label cfe-proxy-api \
+                  --ports 8080 8081 \
+                  --environment-variables \
+                    ASPNETCORE_ENVIRONMENT=Production \
+                    ASPNETCORE_URLS='http://+:8080;https://+:8081'
