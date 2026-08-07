@@ -9,11 +9,23 @@
             IdentificationController sirve para manejar las solicitudes de identificación de usuarios.
             </summary>
         </member>
+        <member name="M:API.Controllers.IdentificationController.#ctor(System.Net.Http.IHttpClientFactory)">
+            <summary>
+            IdentificationController es el constructor de la clase que recibe un IHttpClientFactory para crear instancias de HttpClient.
+            </summary>
+            <param name="httpClientFactory"></param>
+        </member>
         <member name="M:API.Controllers.IdentificationController.Identify(Domain.IdentifyRequest)">
             <summary>
             Identify es un método que recibe una solicitud de identificación y devuelve una respuesta con los servicios asociados al número de teléfono proporcionado.
             </summary>
             <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:API.Controllers.IdentificationController.Get">
+            <summary>
+            Test 
+            </summary>
             <returns></returns>
         </member>
     </members>

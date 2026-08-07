@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
+
 //builder.Services.AddPersistence(builder.Configuration);
 //builder.Services.AddScoped<DataverseContext>();
 //builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<GetMentorList.Handler>());
@@ -44,9 +46,9 @@ builder.Services.AddSwaggerGen(c =>
 
     c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
     {
-        Title = "Admin Matching API",
+        Title = "CFE API Proxy",
         Version = "v1",
-        Description = "API to handle the requests and responses from Futurpreneur Admin Matching Portal. "
+        Description = "API to handle the requests and responses from CFE API. "
     });
 
     // Enable XML comments for API documentation
@@ -77,7 +79,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Admin Matching API v1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CFE API Proxy v1"));
     app.UseDeveloperExceptionPage();
 }
 else
@@ -88,7 +90,7 @@ else
     app.UseSwagger();
     app.UseSwaggerUI(c => 
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Admin Matching API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CFE API Proxy v1");
         c.RoutePrefix = string.Empty; // Swagger at root in production
     });
 }

@@ -15,6 +15,10 @@ namespace API.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
+        /// <summary>
+        /// IdentificationController es el constructor de la clase que recibe un IHttpClientFactory para crear instancias de HttpClient.
+        /// </summary>
+        /// <param name="httpClientFactory"></param>
         public IdentificationController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -61,5 +65,22 @@ namespace API.Controllers
                 return StatusCode(500, new { Message = "Error al invocar el servicio externo", Error = ex.Message });
             }
         }
+        /// <summary>
+        /// Test 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet(Name = "GetTestForecast")]
+        public IEnumerable<WeatherForecast> Get()
+        {
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+
+            })
+            .ToArray();
+        }
     }
-}
+
+
+    }
