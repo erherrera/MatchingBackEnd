@@ -66,7 +66,7 @@ namespace API.Controllers
             }
         }
         /// <summary>
-        /// Test 
+        /// Test get api
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetTestForecast")]
