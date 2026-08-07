@@ -79,7 +79,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CFE API Proxy v1"));
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CFE DEV API Proxy v1"));
     app.UseDeveloperExceptionPage();
 }
 else
@@ -90,7 +90,7 @@ else
     app.UseSwagger();
     app.UseSwaggerUI(c => 
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CFE API Proxy v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CFE PROD API Proxy v1");
         c.RoutePrefix = string.Empty; // Swagger at root in production
     });
 }
