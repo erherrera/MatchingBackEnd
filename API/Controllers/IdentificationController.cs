@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 
 namespace API.Controllers
 {
@@ -12,6 +13,13 @@ namespace API.Controllers
 
     public class IdentificationController : BaseApiController
     {
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public IdentificationController(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+
         /// <summary>
         /// Identify es un método que recibe una solicitud de identificación y devuelve una respuesta con los servicios asociados al número de teléfono proporcionado.
         /// </summary>
@@ -22,9 +30,36 @@ namespace API.Controllers
         public async Task<IActionResult> Identify(
             [FromBody] IdentifyRequest request)
         {
-            return Ok();
-
-
+            var httpClient = _httpClientFactory.CreateClient();
+            
+            // Ignorar validación de certificados SSL (solo para desarrollo/testing)
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            
+            using var client = new HttpClient(handler);
+            
+            try
+            {
+                // Hacer la petición GET al servicio externo
+                var response = await client.GetAsync("https://10.19.151.100:443/status");
+                
+                // Leer el contenido como string sin deserializar
+                var content = await response.Content.ReadAsStringAsync();
+                
+                // Retornar la respuesta tal cual con el status code original
+                return new ContentResult
+                {
+                    Content = content,
+                    ContentType = "application/json",
+                    StatusCode = (int)response.StatusCode
+                };
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Error al invocar el servicio externo", Error = ex.Message });
+            }
         }
     }
 }
